@@ -68,7 +68,7 @@ router.post('/signin', (req, res) => {
 });
 
 router.route('/movies')
-    .get((req, res) => {
+    .get(authJwtController.isAuthenticated, (req, res) => {
         if(req.query.reviews === "true") {
             Movie.aggregate([
                 {
