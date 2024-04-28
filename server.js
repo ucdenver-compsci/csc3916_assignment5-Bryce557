@@ -105,8 +105,8 @@ router.route('/movies')
     })
     .post(authJwtController.isAuthenticated, (req, res) => {
         // Ensure appropriate fields are in the request
-        if(!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors) {
-            res.json({success: false, msg: 'Please include title, releaseDate, genre and actors.'});
+        if(!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors || !req.body.imageUrl) {
+            res.json({success: false, msg: 'Please include title, releaseDate, genre, actors and URL.'});
         }
         // If so, create a new movie and add to database
         else {
@@ -115,6 +115,7 @@ router.route('/movies')
             movie.releaseDate = req.body.releaseDate;
             movie.genre = req.body.genre;
             movie.actors = req.body.actors;
+            movie.imageUrl = req.body.imageUrl
             // Save the movie in the database
             movie.save(function(err) {
                 if(err) {
@@ -191,8 +192,8 @@ router.route('/movies/:id')
     })
     .put(authJwtController.isAuthenticated, (req, res) => {
         // Ensure appropriate fields are in the request
-        if(!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors) {
-            res.json({success: false, msg: 'Please include title, releaseDate, genre and actors.'});
+        if(!req.body.title || !req.body.releaseDate || !req.body.genre || !req.body.actors || !req.body.imageUrl) {
+            res.json({success: false, msg: 'Please include title, releaseDate, genre, actors and URL.'});
         }
         // If so, update the movie and save to database
         else {
@@ -201,6 +202,7 @@ router.route('/movies/:id')
             movie.releaseDate = req.body.releaseDate;
             movie.genre = req.body.genre;
             movie.actors = req.body.actors;
+            movie.imageUrl = req.body.imageUrl
             Movie.findOneAndUpdate(
                 { _id: id },
                 { $set: req.body },
