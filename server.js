@@ -69,13 +69,40 @@ router.post('/signin', (req, res) => {
 
 router.route('/movies')
     .get(authJwtController.isAuthenticated, (req, res) => {
-        Movie.find({}, (err, movies) => {
-            if(err) {
-                return res.status(500).json({error: 'Internal Server Error'});
-            }
-            // Return the list of movies
-            return res.json(movies);
-        })
+        const id = mongoose.Types.ObjectId(req.params.id);
+        if(req.query.reviews === "true") {
+            Movie.aggregate([
+                {
+                    $lookup: {
+                        from: 'reviews',
+                        localField: '_id',
+                        foreignField: 'movieId',
+                        as: 'reviews'
+                    },
+                },
+                {
+                    $addFields: {
+                        average_rating: { $avg: '$reviews.rating' }
+                    }
+                },
+                {
+                    $sort: {average_rating: -1 }
+                }
+            ]).exec((err, movies) => {
+                if(err) {
+                    return res.status(500).json({error: 'Internal Server Error'});
+                }
+                res.json(movies)
+            });
+        } else {
+            Movie.find({}, (err, movies) => {
+                if(err) {
+                    return res.status(500).json({error: 'Internal Server Error'});
+                }
+                // Return the list of movies
+                return res.json(movies);
+            })
+        }
     })
     .post(authJwtController.isAuthenticated, (req, res) => {
         // Ensure appropriate fields are in the request
@@ -108,7 +135,7 @@ router.route('/movies')
     });
 
 router.route('/movies/:id')
-    .get((req, res) => {
+    .get(authJwtController.isAuthenticated, (req, res) => {
         const id = mongoose.Types.ObjectId(req.params.id);
         if(req.query.reviews === "true") {
             Movie.aggregate([
