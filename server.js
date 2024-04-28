@@ -69,7 +69,6 @@ router.post('/signin', (req, res) => {
 
 router.route('/movies')
     .get(authJwtController.isAuthenticated, (req, res) => {
-        const id = mongoose.Types.ObjectId(req.params.id);
         if(req.query.reviews === "true") {
             Movie.aggregate([
                 {

@@ -20,7 +20,7 @@ var MovieSchema = new Schema({
         actorName: String,
         characterName: String,
     }],
-    imageUrl: String,
+    //imageUrl: String,
 });
 
 // Return the model of our server
