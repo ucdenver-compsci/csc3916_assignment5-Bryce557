@@ -68,8 +68,8 @@ router.post('/signin', (req, res) => {
 });
 
 router.route('/movies')
-    .get(authJwtController.isAuthenticated, (req, res) => {
-      /*  if(req.query.reviews === "true") {
+    .get((req, res) => {
+        if(req.query.reviews === "true") {
             Movie.aggregate([
                 {
                     $lookup: {
@@ -93,7 +93,7 @@ router.route('/movies')
                 }
                 res.json(movies)
             });
-        } else { */
+        } else { 
             Movie.find({}, (err, movies) => {
                 if(err) {
                     return res.status(500).json({error: 'Internal Server Error'});
@@ -101,7 +101,7 @@ router.route('/movies')
                 // Return the list of movies
                 return res.json(movies);
             })
-        //}
+        }
     })
     .post(authJwtController.isAuthenticated, (req, res) => {
         // Ensure appropriate fields are in the request
